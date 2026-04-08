@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Médiateur BPMN</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
+
+    #app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* ── Toolbar ── */
+    #toolbar {
+      flex: 0 0 48px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 10;
+    }
+    #toolbar strong { flex: 1; font-size: 13px; letter-spacing: .05em; }
+    #toolbar button {
+      background: #3498db; color: white; border: none;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;
+    }
+    #toolbar button:hover { background: #2980b9; }
+
+    /* ── Main area ── */
+    #main { display: flex; flex: 1; min-height: 0; }
+
+    /* ── Canvas ── */
+    #canvas {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      background: #fff;
+    }
+
+    /* ── Properties panel ── */
+    #properties-panel {
+      width: 320px;
+      border-left: 1px solid #ccc;
+      overflow-y: auto;
+      background: #fafafa;
+    }
+
+    /* bpmn-js-properties-panel injecte son propre CSS,
+       on force juste la hauteur totale */
+    .bio-properties-panel { height: 100%; }
+  </style>
+
+  <!-- CSS officiel du properties-panel (injecté par main.js via import) -->
+  <script type="module" crossorigin src="/assets/index-ChWidtRz.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Dfr9SHiK.css">
+</head>
+<body>
+  <div id="app">
+    <div id="toolbar">
+      <strong>MÉDIATEUR SÉMANTIQUE — BPMN</strong>
+      <button id="btn-new">Nouveau</button>
+      <button id="btn-import">Importer…</button>
+      <button id="btn-export">Exporter XML</button>
+      <button id="btn-export-svg">Exporter SVG</button>
+    </div>
+    <div id="main">
+      <div id="canvas"></div>
+      <div id="properties-panel"></div>
+    </div>
+  </div>
+
+  <!-- fichier caché pour import -->
+  <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none">
+
+</body>
+</html>
