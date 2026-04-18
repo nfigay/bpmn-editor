@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <title>Médiateur BPMN</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
-
-    #app { display: flex; flex-direction: column; height: 100vh; }
-
-    /* ── Toolbar ── */
-    #toolbar {
-      flex: 0 0 48px;
-      background: #2c3e50;
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      gap: 8px;
-      z-index: 10;
-    }
-    #toolbar strong { flex: 1; font-size: 13px; letter-spacing: .05em; }
-    #toolbar button {
-      background: #3498db; color: white; border: none;
-      padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;
-    }
-    #toolbar button:hover { background: #2980b9; }
-
-    /* ── Main area ── */
-    #main { display: flex; flex: 1; min-height: 0; }
-
-    /* ── Canvas ── */
-    #canvas {
-      flex: 1;
-      min-width: 0;
-      min-height: 0;
-      position: relative;
-      background: #fff;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* ── Properties panel ── */
-    #properties-panel {
-      width: 320px;
-      border-left: 1px solid #ccc;
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* Surcharges w2ui pour le thème BPMN */
+    .w2ui-toolbar {
+      background: #2c3e50 !important;
+      border: none !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-text {
+      color: #ecf0f1 !important;
+      font-size: 13px !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-button:hover .w2ui-tb-text {
+      color: #fff !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-button.checked {
+      background: #2980b9 !important;
+    }
+
+    /* bpmn-js remplit son conteneur */
+    #bpmn-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #bpmn-properties {
+      height: 100%;
       overflow-y: auto;
-      background: #fafafa;
     }
 
-    /* bpmn-js-properties-panel injecte son propre CSS,
-       on force juste la hauteur totale */
-    .bio-properties-panel { height: 100%; }
+    .bio-properties-panel {
+      height: 100%;
+    }
+
+    /* Palette dans panel gauche — supprime le double-scroll */
+    .djs-palette-entries {
+      overflow-y: auto;
+    }
+
+    /* Cache le bouton collapse de la palette (inutile hors canvas) */
+    .djs-palette .djs-palette-toggle {
+      display: none;
+    }
   </style>
-
-  <!-- CSS officiel du properties-panel (injecté par main.js via import) -->
-  <script type="module" crossorigin src="/bpmn-editor/assets/index-CpZmpj_j.js"></script>
-  <link rel="stylesheet" crossorigin href="/bpmn-editor/assets/index-WaiU9295.css">
+  <script type="module" crossorigin src="/bpmn-editor/assets/index-CwInhUPa.js"></script>
+  <link rel="stylesheet" crossorigin href="/bpmn-editor/assets/index-BcAMzvnD.css">
 </head>
+
 <body>
-  <div id="app">
-    <div id="toolbar">
-      <strong>MÉDIATEUR SÉMANTIQUE — BPMN</strong>
-      <button id="btn-new">Nouveau</button>
-      <button id="btn-import">Importer…</button>
-      <button id="btn-export">Exporter XML</button>
-      <button id="btn-export-svg">Exporter SVG</button>
-    </div>
-    <div id="main">
-      <div id="canvas"></div>
-      <div id="properties-panel"></div>
-    </div>
-  </div>
-
-  <!-- fichier caché pour import -->
+  <div id="app"></div>
   <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none">
-
 </body>
+
 </html>
