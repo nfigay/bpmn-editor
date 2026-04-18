@@ -71,54 +71,44 @@ const layout = new w2layout({
 const toolbar = new w2toolbar({
   box: layout.el('top'),
   name: 'main-toolbar',
- items: [
-  {
-    type: 'html',
-    id: 'title',
-    html: `<div style="
+  items: [
+    {
+      type: 'html',
+      id: 'title',
+      html: `<div style="
       padding: 0 16px; color: #ecf0f1; font-weight: 700;
       font-size: 12px; letter-spacing: .08em;
       line-height: 45px; text-transform: uppercase; white-space: nowrap;
     ">Semantic Mediator — BPMN</div>`
-  },
-  { type: 'break' },
-  { type: 'button', id: 'btn-new',    text: 'New',    icon: 'w2ui-icon-plus' },
-  { type: 'button', id: 'btn-import', text: 'Import', icon: 'w2ui-icon-folder' },
-  { type: 'break' },
-  {
-    type: 'menu',
-    id: 'btn-export',
-    text: 'Export',
-    icon: 'w2ui-icon-save',
-    items: [
-      { id: 'export-xml', text: 'Export BPMN / XML' },
-      { id: 'export-svg', text: 'Export SVG' },
-    ]
-  },
-  { type: 'break' },
-  { type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
-],
+    },
+    { type: 'break' },
+    { type: 'button', id: 'btn-new', text: 'New', icon: 'w2ui-icon-plus' },
+    { type: 'button', id: 'btn-import', text: 'Import', icon: 'w2ui-icon-folder' },
+    { type: 'break' },
+    {
+      type: 'menu',
+      id: 'btn-export',
+      text: 'Export',
+      icon: 'w2ui-icon-save',
+      items: [
+        { id: 'export-xml', text: 'Export BPMN / XML' },
+        { id: 'export-svg', text: 'Export SVG' },
+      ]
+    },
+    { type: 'break' },
+    { type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
+  ],
   onClick(event) {
-  console.log('target:', event.target)
-  console.log('detail:', JSON.stringify(event.detail))
+    const target = event.target
 
-  const target = event.target
-  const itemId = event.detail?.item?.id ?? event.detail?.subItem?.id
-
-  if (target === 'btn-new')    { handleNew();       return }
-  if (target === 'btn-import') { handleImport();    return }
-  if (target === 'btn-fit')    { handleFit();       return }
-
-  // Menu sub-items — format possible : 'btn-export:export-xml'
-  if (typeof target === 'string' && target.includes(':')) {
-    const subId = target.split(':')[1]
-    if (subId === 'export-xml') { handleExportXML(); return }
-    if (subId === 'export-svg') { handleExportSVG(); return }
+    switch (target) {
+      case 'btn-new': handleNew(); break
+      case 'btn-import': handleImport(); break
+      case 'btn-fit': handleFit(); break
+      case 'btn-export:export-xml': handleExportXML(); break
+      case 'btn-export:export-svg': handleExportSVG(); break
+    }
   }
-
-  if (itemId === 'export-xml' || target === 'export-xml') { handleExportXML(); return }
-  if (itemId === 'export-svg' || target === 'export-svg') { handleExportSVG(); return }
-}
 })
 
 // ── 3. Conteneurs bpmn-js ────────────────────────────────────────────────────
