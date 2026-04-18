@@ -98,17 +98,15 @@ const toolbar = new w2toolbar({
     { type: 'break' },
     { type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
   ],
-  onClick(event) {
-    const target = event.target
-
-    switch (target) {
-      case 'btn-new': handleNew(); break
-      case 'btn-import': handleImport(); break
-      case 'btn-fit': handleFit(); break
-      case 'btn-export:export-xml': handleExportXML(); break
-      case 'btn-export:export-svg': handleExportSVG(); break
-    }
+ onClick(event) {
+  switch (event.target) {
+    case 'btn-new':               handleNew();       break
+    case 'btn-import':            handleImport();    break
+    case 'btn-fit':               handleFit();       break
+    case 'btn-export:export-xml': handleExportXML(); break
+    case 'btn-export:export-svg': handleExportSVG(); break
   }
+}
 })
 
 // ── 3. Conteneurs bpmn-js ────────────────────────────────────────────────────
