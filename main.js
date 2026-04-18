@@ -99,18 +99,26 @@ const toolbar = new w2toolbar({
   { type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
 ],
   onClick(event) {
-    // Items de menu (Export XML, Export SVG)
-    const itemId = event.detail?.item?.id
-    if (itemId === 'export-xml') { handleExportXML(); return }
-    if (itemId === 'export-svg') { handleExportSVG(); return }
+  console.log('target:', event.target)
+  console.log('detail:', JSON.stringify(event.detail))
 
-    // Boutons simples
-    switch (event.target) {
-      case 'btn-new': handleNew(); break
-      case 'btn-import': handleImport(); break
-      case 'btn-fit': handleFit(); break
-    }
+  const target = event.target
+  const itemId = event.detail?.item?.id ?? event.detail?.subItem?.id
+
+  if (target === 'btn-new')    { handleNew();       return }
+  if (target === 'btn-import') { handleImport();    return }
+  if (target === 'btn-fit')    { handleFit();       return }
+
+  // Menu sub-items — format possible : 'btn-export:export-xml'
+  if (typeof target === 'string' && target.includes(':')) {
+    const subId = target.split(':')[1]
+    if (subId === 'export-xml') { handleExportXML(); return }
+    if (subId === 'export-svg') { handleExportSVG(); return }
   }
+
+  if (itemId === 'export-xml' || target === 'export-xml') { handleExportXML(); return }
+  if (itemId === 'export-svg' || target === 'export-svg') { handleExportSVG(); return }
+}
 })
 
 // ── 3. Conteneurs bpmn-js ────────────────────────────────────────────────────
