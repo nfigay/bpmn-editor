@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Médiateur BPMN</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* Surcharges w2ui pour le thème BPMN */
+    .w2ui-toolbar {
+      background: #2c3e50 !important;
+      border: none !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-text {
+      color: #ecf0f1 !important;
+      font-size: 13px !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-button:hover .w2ui-tb-text {
+      color: #fff !important;
+    }
+
+    .w2ui-toolbar .w2ui-tb-button.checked {
+      background: #2980b9 !important;
+    }
+
+    /* bpmn-js remplit son conteneur */
+    #bpmn-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #bpmn-properties {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .bio-properties-panel {
+      height: 100%;
+    }
+
+    /* Palette dans panel gauche — supprime le double-scroll */
+    .djs-palette-entries {
+      overflow-y: auto;
+    }
+
+    /* Cache le bouton collapse de la palette (inutile hors canvas) */
+    .djs-palette .djs-palette-toggle {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none">
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
