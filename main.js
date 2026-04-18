@@ -26,7 +26,7 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
   targetNamespace="http://bpmn.io/schema/bpmn"
   id="Def_1">
   <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1" name="Début"/>
+    <bpmn:startEvent id="StartEvent_1" name="Start"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -79,24 +79,23 @@ const toolbar = new w2toolbar({
         padding: 0 16px; color: #ecf0f1; font-weight: 700;
         font-size: 12px; letter-spacing: .08em;
         line-height: 45px; text-transform: uppercase; white-space: nowrap;
-      ">Médiateur Sémantique — BPMN</div>`
+      ">Semantic Mediator — BPMN</div>`
     },
-    { type: 'spacer' },
-    { type: 'button', id: 'btn-new',    text: 'Nouveau',   icon: 'w2ui-icon-plus' },
-    { type: 'button', id: 'btn-import', text: 'Importer…', icon: 'w2ui-icon-folder' },
-    { type: 'break' },
-    {
-      type: 'menu',
-      id: 'btn-export',
-      text: 'Exporter',
-      icon: 'w2ui-icon-save',
-      items: [
-        { id: 'export-xml', text: 'Exporter BPMN / XML' },
-        { id: 'export-svg', text: 'Exporter SVG' },
-      ]
-    },
-    { type: 'break' },
-    { type: 'button', id: 'btn-fit', text: 'Ajuster', icon: 'w2ui-icon-zoom' },
+    { type: 'button', id: 'btn-new',    text: 'New',      icon: 'w2ui-icon-plus' },
+{ type: 'button', id: 'btn-import', text: 'Import…',  icon: 'w2ui-icon-folder' },
+{ type: 'break' },
+{
+  type: 'menu',
+  id: 'btn-export',
+  text: 'Export',
+  icon: 'w2ui-icon-save',
+  items: [
+    { id: 'export-xml', text: 'Export BPMN / XML' },
+    { id: 'export-svg', text: 'Export SVG' },
+  ]
+},
+{ type: 'break' },
+{ type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
   ],
   onClick(event) {
     const id = event.detail?.item?.id ?? event.target
@@ -160,7 +159,7 @@ async function loadDiagram(xml) {
 }
 
 function handleNew() {
-  w2confirm('Créer un nouveau diagramme ? Les modifications non sauvegardées seront perdues.')
+  w2confirm('Create a new diagram? Unsaved changes will be lost.')
     .yes(() => loadDiagram(EMPTY_DIAGRAM))
 }
 
