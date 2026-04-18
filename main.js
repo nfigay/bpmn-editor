@@ -81,21 +81,22 @@ const toolbar = new w2toolbar({
         line-height: 45px; text-transform: uppercase; white-space: nowrap;
       ">Semantic Mediator — BPMN</div>`
     },
-    { type: 'button', id: 'btn-new',    text: 'New',      icon: 'w2ui-icon-plus' },
-{ type: 'button', id: 'btn-import', text: 'Import…',  icon: 'w2ui-icon-folder' },
-{ type: 'break' },
-{
-  type: 'menu',
-  id: 'btn-export',
-  text: 'Export',
-  icon: 'w2ui-icon-save',
-  items: [
-    { id: 'export-xml', text: 'Export BPMN / XML' },
-    { id: 'export-svg', text: 'Export SVG' },
-  ]
-},
-{ type: 'break' },
-{ type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
+    { type: 'spacer' },
+    { type: 'button', id: 'btn-new',    text: 'New',   icon: 'w2ui-icon-plus' },
+    { type: 'button', id: 'btn-import', text: 'Import', icon: 'w2ui-icon-folder' },
+    { type: 'break' },
+    {
+      type: 'menu',
+      id: 'btn-export',
+      text: 'Export',
+      icon: 'w2ui-icon-save',
+      items: [
+        { id: 'export-xml', text: 'Export BPMN / XML' },
+        { id: 'export-svg', text: 'Export SVG' },
+      ]
+    },
+    { type: 'break' },
+    { type: 'button', id: 'btn-fit', text: 'Adjust', icon: 'w2ui-icon-zoom' },
   ],
   onClick(event) {
     const id = event.detail?.item?.id ?? event.target
