@@ -71,47 +71,50 @@ const layout = new w2layout({
 const toolbar = new w2toolbar({
   box: layout.el('top'),
   name: 'main-toolbar',
-  items: [
-    {
-      type: 'html',
-      id: 'title',
-      html: `<div style="
-        padding: 0 16px; color: #ecf0f1; font-weight: 700;
-        font-size: 12px; letter-spacing: .08em;
-        line-height: 45px; text-transform: uppercase; white-space: nowrap;
-      ">Semantic Mediator — BPMN</div>`
-    },
-    { type: 'spacer' },
-    { type: 'button', id: 'btn-new',    text: 'New',   icon: 'w2ui-icon-plus' },
-    { type: 'button', id: 'btn-import', text: 'Import', icon: 'w2ui-icon-folder' },
-    { type: 'break' },
-    {
-      type: 'menu',
-      id: 'btn-export',
-      text: 'Export',
-      icon: 'w2ui-icon-save',
-      items: [
-        { id: 'export-xml', text: 'Export BPMN / XML' },
-        { id: 'export-svg', text: 'Export SVG' },
-      ]
-    },
-    { type: 'break' },
-    { type: 'button', id: 'btn-fit', text: 'Adjust', icon: 'w2ui-icon-zoom' },
-  ],
+ items: [
+  {
+    type: 'html',
+    id: 'title',
+    html: `<div style="
+      padding: 0 16px; color: #ecf0f1; font-weight: 700;
+      font-size: 12px; letter-spacing: .08em;
+      line-height: 45px; text-transform: uppercase; white-space: nowrap;
+    ">Semantic Mediator — BPMN</div>`
+  },
+  { type: 'break' },
+  { type: 'button', id: 'btn-new',    text: 'New',    icon: 'w2ui-icon-plus' },
+  { type: 'button', id: 'btn-import', text: 'Import', icon: 'w2ui-icon-folder' },
+  { type: 'break' },
+  {
+    type: 'menu',
+    id: 'btn-export',
+    text: 'Export',
+    icon: 'w2ui-icon-save',
+    items: [
+      { id: 'export-xml', text: 'Export BPMN / XML' },
+      { id: 'export-svg', text: 'Export SVG' },
+    ]
+  },
+  { type: 'break' },
+  { type: 'button', id: 'btn-fit', text: 'Fit', icon: 'w2ui-icon-zoom' },
+],
   onClick(event) {
-    const id = event.detail?.item?.id ?? event.target
-    switch (id) {
-      case 'btn-new':    handleNew();       break
-      case 'btn-import': handleImport();    break
-      case 'export-xml': handleExportXML(); break
-      case 'export-svg': handleExportSVG(); break
-      case 'btn-fit':    handleFit();       break
+    // Items de menu (Export XML, Export SVG)
+    const itemId = event.detail?.item?.id
+    if (itemId === 'export-xml') { handleExportXML(); return }
+    if (itemId === 'export-svg') { handleExportSVG(); return }
+
+    // Boutons simples
+    switch (event.target) {
+      case 'btn-new': handleNew(); break
+      case 'btn-import': handleImport(); break
+      case 'btn-fit': handleFit(); break
     }
   }
 })
 
 // ── 3. Conteneurs bpmn-js ────────────────────────────────────────────────────
-layout.el('main').innerHTML  = '<div id="bpmn-canvas" style="width:100%;height:100%;"></div>'
+layout.el('main').innerHTML = '<div id="bpmn-canvas" style="width:100%;height:100%;"></div>'
 layout.el('right').innerHTML = '<div id="bpmn-properties" style="height:100%;"></div>'
 
 // ── 4. Modeler bpmn-js ───────────────────────────────────────────────────────
@@ -136,15 +139,15 @@ function extractPalette() {
 
   // Réinitialise le positionnement absolu de bpmn-js
   Object.assign(paletteEl.style, {
-    position : 'relative',
-    left     : '0',
-    top      : '0',
-    width    : '100%',
-    height   : '100%',
-    border   : 'none',
-    borderRadius : '0',
-    boxShadow    : 'none',
-    background   : 'transparent',
+    position: 'relative',
+    left: '0',
+    top: '0',
+    width: '100%',
+    height: '100%',
+    border: 'none',
+    borderRadius: '0',
+    boxShadow: 'none',
+    background: 'transparent',
   })
 }
 

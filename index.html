@@ -5,70 +5,52 @@
   <meta charset="UTF-8" />
   <title>Médiateur BPMN</title>
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; width: 100%; overflow: hidden; }
+  #app { width: 100%; height: 100vh; }
 
-    html,
-    body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
+  /* ── Toolbar fond sombre ── */
+  .w2ui-toolbar {
+    background: #2c3e50 !important;
+    border: none !important;
+  }
 
-    #app {
-      width: 100%;
-      height: 100vh;
-    }
+  /* ── Texte boutons toujours blanc ── */
+  .w2ui-toolbar .w2ui-tb-text {
+    color: #ecf0f1 !important;
+  }
 
-    /* Surcharges w2ui pour le thème BPMN */
-    .w2ui-toolbar {
-      background: #2c3e50 !important;
-      border: none !important;
-    }
+  /* ── Hover / focus : fond légèrement clair, texte blanc ── */
+  .w2ui-toolbar .w2ui-tb-button:hover,
+  .w2ui-toolbar .w2ui-tb-button.checked,
+  .w2ui-toolbar .w2ui-tb-button:focus {
+    background: rgba(255,255,255,0.15) !important;
+  }
+  .w2ui-toolbar .w2ui-tb-button:hover .w2ui-tb-text,
+  .w2ui-toolbar .w2ui-tb-button.checked .w2ui-tb-text {
+    color: #ecf0f1 !important;
+  }
 
-    .w2ui-toolbar .w2ui-tb-text {
-      color: #ecf0f1 !important;
-      font-size: 13px !important;
-    }
+  /* ── Séparateur ── */
+  .w2ui-toolbar .w2ui-tb-break {
+    border-left: 1px solid rgba(255,255,255,0.2) !important;
+  }
 
-    .w2ui-toolbar .w2ui-tb-button:hover .w2ui-tb-text {
-      color: #fff !important;
-    }
+  /* ── Dropdown menu items ── */
+  .w2ui-overlay .w2ui-menu-item:hover {
+    background: #2980b9 !important;
+    color: #fff !important;
+  }
 
-    .w2ui-toolbar .w2ui-tb-button.checked {
-      background: #2980b9 !important;
-    }
+  /* ── bpmn-js ── */
+  #bpmn-canvas { width: 100%; height: 100%; }
+  #bpmn-properties { height: 100%; overflow-y: auto; }
+  .bio-properties-panel { height: 100%; }
 
-    /* bpmn-js remplit son conteneur */
-    #bpmn-canvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    #bpmn-properties {
-      height: 100%;
-      overflow-y: auto;
-    }
-
-    .bio-properties-panel {
-      height: 100%;
-    }
-
-    /* Palette dans panel gauche — supprime le double-scroll */
-    .djs-palette-entries {
-      overflow-y: auto;
-    }
-
-    /* Cache le bouton collapse de la palette (inutile hors canvas) */
-    .djs-palette .djs-palette-toggle {
-      display: none;
-    }
-  </style>
+  /* ── Palette dans panel gauche ── */
+  .djs-palette-entries { overflow-y: auto; }
+  .djs-palette .djs-palette-toggle { display: none; }
+</style>
 </head>
 
 <body>
