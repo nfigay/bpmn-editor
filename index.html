@@ -1,63 +1,68 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8" />
-  <title>Médiateur BPMN</title>
+  <title>Semantic Mediator — BPMN</title>
   <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; width: 100%; overflow: hidden; }
-  #app { width: 100%; height: 100vh; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
 
-  /* ── Toolbar fond sombre ── */
-  .w2ui-toolbar {
-    background: #2c3e50 !important;
-    border: none !important;
-  }
+    #app { display: flex; flex-direction: column; height: 100vh; }
 
-  /* ── Texte boutons toujours blanc ── */
-  .w2ui-toolbar .w2ui-tb-text {
-    color: #ecf0f1 !important;
-  }
+    #toolbar {
+      flex: 0 0 48px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 10;
+    }
+    #toolbar strong { flex: 1; font-size: 13px; letter-spacing: .05em; }
+    #toolbar button {
+      background: #3498db; color: white; border: none;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;
+    }
+    #toolbar button:hover { background: #2980b9; }
 
-  /* ── Hover / focus : fond légèrement clair, texte blanc ── */
-  .w2ui-toolbar .w2ui-tb-button:hover,
-  .w2ui-toolbar .w2ui-tb-button.checked,
-  .w2ui-toolbar .w2ui-tb-button:focus {
-    background: rgba(255,255,255,0.15) !important;
-  }
-  .w2ui-toolbar .w2ui-tb-button:hover .w2ui-tb-text,
-  .w2ui-toolbar .w2ui-tb-button.checked .w2ui-tb-text {
-    color: #ecf0f1 !important;
-  }
+    #main { display: flex; flex: 1; min-height: 0; }
 
-  /* ── Séparateur ── */
-  .w2ui-toolbar .w2ui-tb-break {
-    border-left: 1px solid rgba(255,255,255,0.2) !important;
-  }
+    #canvas {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      background: #fff;
+    }
 
-  /* ── Dropdown menu items ── */
-  .w2ui-overlay .w2ui-menu-item:hover {
-    background: #2980b9 !important;
-    color: #fff !important;
-  }
+    #properties-panel {
+      width: 320px;
+      border-left: 1px solid #ccc;
+      overflow-y: auto;
+      background: #fafafa;
+    }
 
-  /* ── bpmn-js ── */
-  #bpmn-canvas { width: 100%; height: 100%; }
-  #bpmn-properties { height: 100%; overflow-y: auto; }
-  .bio-properties-panel { height: 100%; }
-
-  /* ── Palette dans panel gauche ── */
-  .djs-palette-entries { overflow-y: auto; }
-  .djs-palette .djs-palette-toggle { display: none; }
-</style>
-  <script type="module" crossorigin src="/bpmn-editor/assets/index-X3K6BvZp.js"></script>
-  <link rel="stylesheet" crossorigin href="/bpmn-editor/assets/index-BcAMzvnD.css">
+    .bio-properties-panel { height: 100%; }
+  </style>
+  <script type="module" crossorigin src="/bpmn-editor/assets/index-5bjQyLgp.js"></script>
+  <link rel="stylesheet" crossorigin href="/bpmn-editor/assets/index-seEfFQUj.css">
 </head>
-
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div id="toolbar">
+      <strong>SEMANTIC MEDIATOR — BPMN</strong>
+      <button id="btn-new">New</button>
+      <button id="btn-import">Import…</button>
+      <button id="btn-export">Export XML</button>
+      <button id="btn-export-svg">Export SVG</button>
+    </div>
+    <div id="main">
+      <div id="canvas"></div>
+      <div id="properties-panel"></div>
+    </div>
+  </div>
+
   <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none">
 </body>
-
 </html>
