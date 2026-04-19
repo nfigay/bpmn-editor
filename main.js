@@ -45,7 +45,7 @@ const layout = new w2layout({
     {
       type: 'top',
       size: 45,
-      resizable: false,
+      resizable: true,
       style: 'overflow: hidden; padding: 0; background: #2c3e50;'
     },
     {
