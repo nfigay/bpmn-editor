@@ -2155,7 +2155,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn:definitions>`,Y9=new ee({box:`#app`,name:`main-layout`,panels:[{type:`top`,size:45,resizable:!1,style:`overflow: hidden; padding: 0; background: #2c3e50;`},{type:`left`,size:50,resizable:!1,style:`background: #f8f8f8; border-right: 1px solid #ddd; overflow: hidden; padding: 0;`},{type:`main`,style:`background: #fff; overflow: hidden;`},{type:`right`,size:320,resizable:!0,style:`background: #fafafa; border-left: 1px solid #ddd; overflow: hidden;`}]});Y9.el(`top`).innerHTML=`
+</bpmn:definitions>`,Y9=new ee({box:`#app`,name:`main-layout`,panels:[{type:`top`,size:45,resizable:!0,style:`overflow: hidden; padding: 0; background: #2c3e50;`},{type:`left`,size:50,resizable:!1,style:`background: #f8f8f8; border-right: 1px solid #ddd; overflow: hidden; padding: 0;`},{type:`main`,style:`background: #fff; overflow: hidden;`},{type:`right`,size:320,resizable:!0,style:`background: #fafafa; border-left: 1px solid #ddd; overflow: hidden;`}]});Y9.el(`top`).innerHTML=`
   <div style="display:flex; align-items:center; height:45px; padding: 0 8px; gap: 2px;">
     <span class="tb-title">Semantic Mediator — BPMN</span>
     <span class="tb-sep"></span>
