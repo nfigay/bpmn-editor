@@ -271,174 +271,6 @@ function buildCocOptions() {
   ).join('')
 }
 
-function openContextPopup() {
-  // Read current context from definitions
-  const ctx = readRepositoryContext()
-
-  w2popup.open({
-    title   : '⚙ CoC Context — Repository Settings',
-    width   : 560,
-    height  : 420,
-    body    : `
-      <div style="padding:16px;font-family:'DM Sans',sans-serif;font-size:13px;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Centre of Competence</label>
-            <select id="ctx-coc" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;background:#fff;">
-              <option value="">— select CoC —</option>
-              ${buildCocOptions()}
-            </select>
-          </div>
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Maturity Level</label>
-            <select id="ctx-maturity" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;background:#fff;">
-              <option value="L1">L1 — Drawing (informal)</option>
-              <option value="L2">L2 — Modelling (structured)</option>
-              <option value="L3">L3 — Executable (workflow-ready)</option>
-              <option value="L4">L4 — Simulation (analytical)</option>
-            </select>
-          </div>
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Organisation</label>
-            <input id="ctx-org" type="text" placeholder="Airbus D&S"
-              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;box-sizing:border-box;"
-              value="${ctx.organization || ''}"/>
-          </div>
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Target Platform</label>
-            <select id="ctx-platform" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;background:#fff;">
-              <option value="Standalone">Standalone / BPMN.io</option>
-              <option value="ARIS">ARIS (BMS)</option>
-              <option value="EA">Enterprise Architect (CoC)</option>
-              <option value="Camunda">Camunda / Zeebe (executable)</option>
-            </select>
-          </div>
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Reference Standard</label>
-            <input id="ctx-std" type="text" placeholder="DO-178C / ECSS-Q-ST-80 / ISO 9001"
-              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;box-sizing:border-box;"
-              value="${ctx.stdRef || ''}"/>
-          </div>
-
-          <div>
-            <label style="display:block;font-size:11px;font-weight:600;
-              color:#4A6580;margin-bottom:4px;text-transform:uppercase;
-              letter-spacing:.06em;">Programme / Contract</label>
-            <input id="ctx-program" type="text" placeholder="ESA-2024-XXX / Internal"
-              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
-              border-radius:4px;font-size:13px;box-sizing:border-box;"
-              value="${ctx.programContext || ''}"/>
-          </div>
-
-        </div>
-        <div style="margin-top:12px;padding:8px 12px;background:#EEF4FB;
-          border-left:3px solid #2E6DA4;border-radius:0 4px 4px 0;
-          font-size:11px;color:#4A6580;line-height:1.4;">
-          This context is serialised into the BPMN file as
-          <code style="font-family:monospace;background:#D8E8F4;padding:1px 4px;
-            border-radius:2px;">semarch:RepositoryContext</code>
-          — it travels with the model and is transparent to ARIS and EA.
-        </div>
-      </div>`,
-    buttons : `
-      <button class="w2ui-btn" onclick="w2popup.close()">Cancel</button>
-      <button class="w2ui-btn w2ui-btn-blue" id="btn-save-context">Save Context</button>`,
-    onOpen  : () => {
-      // Pre-select values from current context
-      const matSel = document.getElementById('ctx-maturity')
-      const platSel = document.getElementById('ctx-platform')
-      const cocSel  = document.getElementById('ctx-coc')
-      if (matSel  && ctx.maturity)       matSel.value  = ctx.maturity
-      if (platSel && ctx.targetPlatform) platSel.value = ctx.targetPlatform
-      if (cocSel  && ctx.cocOwner)       cocSel.value  = ctx.cocOwner
-
-      // Auto-fill from CoC registry when CoC is selected
-      cocSel?.addEventListener('change', () => {
-        const coc = cocRegistry.cocs.find(c => c.id === cocSel.value)
-        if (!coc) return
-        document.getElementById('ctx-org').value     = coc.organization || ''
-        document.getElementById('ctx-std').value     = coc.stdRef       || ''
-        document.getElementById('ctx-platform').value= coc.targetPlatform || 'Standalone'
-        document.getElementById('ctx-maturity').value= coc.maturity     || 'L1'
-      })
-
-      document.getElementById('btn-save-context')?.addEventListener('click', () => {
-        saveRepositoryContext({
-          cocOwner       : document.getElementById('ctx-coc').value,
-          organization   : document.getElementById('ctx-org').value,
-          maturity       : document.getElementById('ctx-maturity').value,
-          stdRef         : document.getElementById('ctx-std').value,
-          targetPlatform : document.getElementById('ctx-platform').value,
-          programContext : document.getElementById('ctx-program').value,
-          repositoryVersion: ctx.repositoryVersion || '1.0',
-          lastReview     : new Date().toISOString().split('T')[0]
-        })
-        w2popup.close()
-      })
-    }
-  })
-}
-
-// ── Read semarch:RepositoryContext from definitions extensionElements ─────
-function readRepositoryContext() {
-  try {
-    const defs = modeler.getDefinitions()
-    const ext  = defs?.extensionElements
-    const ctx  = ext?.values?.find(v => v.$type === 'semarch:RepositoryContext')
-    return ctx || {}
-  } catch {
-    return {}
-  }
-}
-
-// ── Write semarch:RepositoryContext back to definitions ───────────────────
-function saveRepositoryContext(values) {
-  try {
-    const moddle  = modeler.get('moddle')
-    const modeling = modeler.get('modeling')
-    const defs    = modeler.getDefinitions()
-
-    // Ensure extensionElements exists
-    if (!defs.extensionElements) {
-      defs.extensionElements = moddle.create('bpmn:ExtensionElements', { values: [] })
-    }
-
-    // Remove existing RepositoryContext if any
-    defs.extensionElements.values = (defs.extensionElements.values || [])
-      .filter(v => v.$type !== 'semarch:RepositoryContext')
-
-    // Create new one
-    const ctx = moddle.create('semarch:RepositoryContext', values)
-    defs.extensionElements.values.push(ctx)
-
-    // Adjust linter profile to match maturity
-    linter.setProfile(values.maturity || 'L2')
-    linter.run()
-  } catch (err) {
-    console.error('saveRepositoryContext error:', err)
-  }
-}
-
 // ════════════════════════════════════════════════════════════════════════════
 // 7. PALETTE EXTRACTION → left panel
 // ════════════════════════════════════════════════════════════════════════════
@@ -535,3 +367,171 @@ document.getElementById('btn-lint').addEventListener('click', () => {
 // 10. INITIAL LOAD
 // ════════════════════════════════════════════════════════════════════════════
 loadDiagram(EMPTY_DIAGRAM)
+
+// ── Expose save function globally so inline onclick can reach it ─────────
+window._semarchSaveContext = function () {
+  const values = {
+    cocOwner       : document.getElementById('ctx-coc')?.value      || '',
+    organization   : document.getElementById('ctx-org')?.value      || '',
+    maturity       : document.getElementById('ctx-maturity')?.value || 'L1',
+    stdRef         : document.getElementById('ctx-std')?.value      || '',
+    targetPlatform : document.getElementById('ctx-platform')?.value || 'Standalone',
+    programContext : document.getElementById('ctx-program')?.value  || '',
+    repositoryVersion: '1.0',
+    lastReview     : new Date().toISOString().split('T')[0]
+  }
+  saveRepositoryContext(values)
+  w2popup.close()
+}
+
+function openContextPopup() {
+  const ctx = readRepositoryContext()
+
+  w2popup.open({
+    title  : '⚙ CoC Context — Repository Settings',
+    width  : 560,
+    height : 440,
+    body   : `
+      <div style="padding:16px;font-family:'DM Sans',sans-serif;font-size:13px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Centre of Competence</label>
+            <select id="ctx-coc" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;background:#fff;">
+              <option value="">— select CoC —</option>
+              ${cocRegistry.cocs.map(c =>
+                `<option value="${c.id}" ${ctx.cocOwner === c.id ? 'selected' : ''}>${c.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Maturity Level</label>
+            <select id="ctx-maturity" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;background:#fff;">
+              <option value="L1" ${ctx.maturity==='L1'?'selected':''}>L1 — Drawing</option>
+              <option value="L2" ${ctx.maturity==='L2'?'selected':''}>L2 — Modelling</option>
+              <option value="L3" ${ctx.maturity==='L3'?'selected':''}>L3 — Executable</option>
+              <option value="L4" ${ctx.maturity==='L4'?'selected':''}>L4 — Simulation</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Organisation</label>
+            <input id="ctx-org" type="text" placeholder="Airbus D&S"
+              value="${ctx.organization || ''}"
+              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;box-sizing:border-box;"/>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Target Platform</label>
+            <select id="ctx-platform" style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;background:#fff;">
+              <option value="Standalone"  ${ctx.targetPlatform==='Standalone'?'selected':''}>Standalone / BPMN.io</option>
+              <option value="ARIS"        ${ctx.targetPlatform==='ARIS'?'selected':''}>ARIS (BMS)</option>
+              <option value="EA"          ${ctx.targetPlatform==='EA'?'selected':''}>Enterprise Architect</option>
+              <option value="Camunda"     ${ctx.targetPlatform==='Camunda'?'selected':''}>Camunda / Zeebe</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Reference Standard</label>
+            <input id="ctx-std" type="text" placeholder="DO-178C / ECSS-Q-ST-80"
+              value="${ctx.stdRef || ''}"
+              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;box-sizing:border-box;"/>
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:600;color:#4A6580;
+              margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">
+              Programme / Contract</label>
+            <input id="ctx-program" type="text" placeholder="ESA-2024-XXX"
+              value="${ctx.programContext || ''}"
+              style="width:100%;padding:6px 8px;border:1px solid #D4DCE6;
+              border-radius:4px;font-size:13px;box-sizing:border-box;"/>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:8px 12px;background:#EEF4FB;
+          border-left:3px solid #2E6DA4;border-radius:0 4px 4px 0;
+          font-size:11px;color:#4A6580;line-height:1.4;">
+          Context is serialised as
+          <code style="font-family:monospace;background:#D8E8F4;padding:1px 4px;
+            border-radius:2px;">semarch:RepositoryContext</code>
+          in the BPMN file — transparent to ARIS and EA.
+        </div>
+      </div>`,
+    buttons: `
+      <button class="w2ui-btn" onclick="w2popup.close()">Cancel</button>
+      <button class="w2ui-btn w2ui-btn-blue"
+        onclick="window._semarchSaveContext()">Save Context</button>`,
+    onOpen: () => {
+      // Auto-fill from registry when CoC changes
+      document.getElementById('ctx-coc')?.addEventListener('change', e => {
+        const coc = cocRegistry.cocs.find(c => c.id === e.target.value)
+        if (!coc) return
+        document.getElementById('ctx-org').value      = coc.organization   || ''
+        document.getElementById('ctx-std').value      = coc.stdRef         || ''
+        document.getElementById('ctx-platform').value = coc.targetPlatform || 'Standalone'
+        document.getElementById('ctx-maturity').value = coc.maturity       || 'L1'
+      })
+    }
+  })
+}
+
+function saveRepositoryContext(values) {
+  try {
+    const moddle  = modeler.get('moddle')
+    const canvas  = modeler.get('canvas')
+
+    // Navigate to bpmn:Definitions via root element's business object
+    let defs = canvas.getRootElement().businessObject
+    while (defs.$parent) defs = defs.$parent
+
+    // Ensure extensionElements exists
+    if (!defs.extensionElements) {
+      defs.extensionElements = moddle.create('bpmn:ExtensionElements', { values: [] })
+      defs.extensionElements.$parent = defs
+    }
+    if (!Array.isArray(defs.extensionElements.values)) {
+      defs.extensionElements.values = []
+    }
+
+    // Remove old RepositoryContext
+    defs.extensionElements.values = defs.extensionElements.values
+      .filter(v => v.$type !== 'semarch:RepositoryContext')
+
+    // Create and attach new one
+    const ctx = moddle.create('semarch:RepositoryContext', values)
+    ctx.$parent = defs.extensionElements
+    defs.extensionElements.values.push(ctx)
+
+    // Adjust linter profile
+    linter.setProfile(values.maturity || 'L2')
+    linter.run()
+
+    console.log('[SemArch] RepositoryContext saved:', values)
+  } catch (err) {
+    console.error('[SemArch] saveRepositoryContext failed:', err)
+    alert('Context save failed: ' + err.message)
+  }
+}
+
+function readRepositoryContext() {
+  try {
+    const canvas = modeler.get('canvas')
+    let defs = canvas.getRootElement().businessObject
+    while (defs.$parent) defs = defs.$parent
+    const ctx = defs.extensionElements?.values
+      ?.find(v => v.$type === 'semarch:RepositoryContext')
+    return ctx || {}
+  } catch {
+    return {}
+  }
+}
