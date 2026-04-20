@@ -1,5 +1,5 @@
 // ── w2ui ────────────────────────────────────────────────────────────────────
-import { w2layout, w2popup, w2alert, w2confirm } from 'w2ui/w2ui-2.0.es6.js'
+import { w2layout, w2popup } from 'w2ui/w2ui-2.0.es6.js'
 import 'w2ui/w2ui-2.0.min.css'
 
 // ── bpmn-js — standard BPMN properties only (no Camunda) ────────────────────
@@ -15,13 +15,12 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import '@bpmn-io/properties-panel/assets/properties-panel.css'
 
 // ── SemArch extensions ───────────────────────────────────────────────────────
-import semarchModdle  from './extensions/semarch.json'
-import cocRegistry    from './extensions/coc-registry.json'
+import semarchModdle from './extensions/semarch.json'
+import cocRegistry   from './extensions/coc-registry.json'
 import { SemArchLinter } from './linting/semarch-linter.js'
 
 // ════════════════════════════════════════════════════════════════════════════
 // DEFAULT DIAGRAM — Collaboration with two Pools
-// (enables MessageFlow and inter-process modelling from the start)
 // ════════════════════════════════════════════════════════════════════════════
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions
@@ -117,7 +116,7 @@ const layout = new w2layout({
 })
 
 // ════════════════════════════════════════════════════════════════════════════
-// 2. TOOLBAR — native HTML, native event listeners
+// 2. TOOLBAR
 // ════════════════════════════════════════════════════════════════════════════
 layout.el('top').innerHTML = `
   <div style="display:flex;align-items:center;height:45px;padding:0 10px;gap:2px;">
@@ -145,8 +144,8 @@ layout.el('top').innerHTML = `
 // ════════════════════════════════════════════════════════════════════════════
 // 3. BPMN-JS CONTAINERS
 // ════════════════════════════════════════════════════════════════════════════
-layout.el('main').innerHTML  = '<div id="bpmn-canvas"  style="width:100%;height:100%;"></div>'
-layout.el('right').innerHTML = '<div id="bpmn-props"   style="height:100%;"></div>'
+layout.el('main').innerHTML  = '<div id="bpmn-canvas" style="width:100%;height:100%;"></div>'
+layout.el('right').innerHTML = '<div id="bpmn-props"  style="height:100%;"></div>'
 
 layout.el('bottom').innerHTML = `
   <div id="lint-panel" style="height:100%;display:flex;flex-direction:column;">
@@ -163,7 +162,7 @@ layout.el('bottom').innerHTML = `
 `
 
 // ════════════════════════════════════════════════════════════════════════════
-// 4. BPMN MODELER — standard BPMN, semarch extension, no Camunda
+// 4. BPMN MODELER — semarch extension, no Camunda
 // ════════════════════════════════════════════════════════════════════════════
 const modeler = new BpmnModeler({
   container: '#bpmn-canvas',
@@ -181,7 +180,7 @@ const modeler = new BpmnModeler({
 // 5. LINTER
 // ════════════════════════════════════════════════════════════════════════════
 const linter = new SemArchLinter(modeler, renderLintResults)
-linter.setProfile('L2') // default — adjusts when CoC context is saved
+linter.setProfile('L2')
 
 function renderLintResults(issues) {
   const container = document.getElementById('lint-results')
@@ -193,27 +192,23 @@ function renderLintResults(issues) {
   const warnings = issues.filter(i => i.severity === 'warning').length
   const infos    = issues.filter(i => i.severity === 'info').length
 
-  // Badge in toolbar
   if (issues.length === 0) {
     badge.style.display = 'none'
     summary.textContent = 'No issues'
-  } else {
-    badge.style.display = ''
-    const parts = []
-    if (errors)   parts.push(`${errors}E`)
-    if (warnings) parts.push(`${warnings}W`)
-    if (infos)    parts.push(`${infos}I`)
-    badge.textContent   = parts.join(' · ')
-    summary.textContent = `${issues.length} issue${issues.length > 1 ? 's' : ''}`
-  }
-
-  if (issues.length === 0) {
     container.innerHTML = `
       <div style="padding:8px 14px;font-family:monospace;font-size:11px;color:#6BAF92;">
         ✓ All rules passed
       </div>`
     return
   }
+
+  const parts = []
+  if (errors)   parts.push(`${errors}E`)
+  if (warnings) parts.push(`${warnings}W`)
+  if (infos)    parts.push(`${infos}I`)
+  badge.style.display = ''
+  badge.textContent   = parts.join(' · ')
+  summary.textContent = `${issues.length} issue${issues.length > 1 ? 's' : ''}`
 
   const severityColors = {
     error:   { dot: '#B84040', bg: '#FBF3F3', text: '#7A2020' },
@@ -222,7 +217,7 @@ function renderLintResults(issues) {
   }
 
   container.innerHTML = issues.map(issue => {
-    const c = severityColors[issue.severity] || severityColors.info
+    const c    = severityColors[issue.severity] || severityColors.info
     const name = issue.element.businessObject?.name
       ? ` — ${issue.element.businessObject.name}`
       : ''
@@ -249,7 +244,6 @@ function renderLintResults(issues) {
       </div>`
   }).join('')
 
-  // Click on a lint row → select element in canvas
   container.querySelectorAll('.lint-row').forEach(row => {
     row.addEventListener('click', () => {
       const id = row.dataset.elementId
@@ -263,112 +257,68 @@ function renderLintResults(issues) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// 6. COC CONTEXT POPUP
+// 6. REPOSITORY CONTEXT — read / write semarch:RepositoryContext
 // ════════════════════════════════════════════════════════════════════════════
-function buildCocOptions() {
-  return cocRegistry.cocs.map(c =>
-    `<option value="${c.id}">${c.name}</option>`
-  ).join('')
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// 7. PALETTE EXTRACTION → left panel
-// ════════════════════════════════════════════════════════════════════════════
-function extractPalette() {
-  const el = document.querySelector('#bpmn-canvas .djs-palette')
-  if (!el) return
-  const left = layout.el('left')
-  left.innerHTML = ''
-  left.appendChild(el)
-  Object.assign(el.style, {
-    position: 'relative', left: '0', top: '0',
-    width: '100%', height: '100%',
-    border: 'none', borderRadius: '0',
-    boxShadow: 'none', background: 'transparent',
-  })
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// 8. DIAGRAM LOAD / SAVE
-// ════════════════════════════════════════════════════════════════════════════
-async function loadDiagram(xml) {
+function getDefinitions() {
   try {
-    await modeler.importXML(xml)
-    modeler.get('canvas').zoom('fit-viewport')
-    extractPalette()
-    // Read maturity from context and update linter profile
-    const ctx = readRepositoryContext()
-    if (ctx.maturity) linter.setProfile(ctx.maturity)
-  } catch (err) {
-    alert('Import failed: ' + err.message)
+    const canvas = modeler.get('canvas')
+    let bo = canvas.getRootElement().businessObject
+    while (bo.$parent) bo = bo.$parent
+    return bo
+  } catch {
+    return null
   }
 }
 
-function download(content, filename, mimeType) {
-  const blob = new Blob([content], { type: mimeType })
-  const a    = document.createElement('a')
-  a.href     = URL.createObjectURL(blob)
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(a.href)
+function readRepositoryContext() {
+  try {
+    const defs = getDefinitions()
+    return defs?.extensionElements?.values
+      ?.find(v => v.$type === 'semarch:RepositoryContext') || {}
+  } catch {
+    return {}
+  }
+}
+
+function saveRepositoryContext(values) {
+  try {
+    const moddle = modeler.get('moddle')
+    const defs   = getDefinitions()
+    if (!defs) throw new Error('Cannot reach bpmn:Definitions')
+
+    if (!defs.extensionElements) {
+      defs.extensionElements = moddle.create('bpmn:ExtensionElements', { values: [] })
+      defs.extensionElements.$parent = defs
+    }
+    if (!Array.isArray(defs.extensionElements.values)) {
+      defs.extensionElements.values = []
+    }
+
+    // Remove old context
+    defs.extensionElements.values = defs.extensionElements.values
+      .filter(v => v.$type !== 'semarch:RepositoryContext')
+
+    // Create new context
+    const ctx = moddle.create('semarch:RepositoryContext', values)
+    ctx.$parent = defs.extensionElements
+    defs.extensionElements.values.push(ctx)
+
+    // Update linter profile
+    linter.setProfile(values.maturity || 'L2')
+    linter.run()
+
+    console.log('[SemArch] RepositoryContext saved:', values)
+  } catch (err) {
+    console.error('[SemArch] saveRepositoryContext failed:', err)
+    alert('Context save failed: ' + err.message)
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// 9. EVENT LISTENERS
+// 7. COC CONTEXT POPUP
 // ════════════════════════════════════════════════════════════════════════════
-document.getElementById('btn-new').addEventListener('click', () => {
-  if (confirm('Create a new diagram? Unsaved changes will be lost.')) {
-    loadDiagram(EMPTY_DIAGRAM)
-  }
-})
 
-const fileInput = document.getElementById('file-input')
-document.getElementById('btn-import').addEventListener('click', () => {
-  fileInput.value = ''
-  fileInput.click()
-})
-fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0]
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = e => loadDiagram(e.target.result)
-  reader.readAsText(file)
-})
-
-document.getElementById('btn-export-xml').addEventListener('click', async () => {
-  try {
-    const { xml } = await modeler.saveXML({ format: true })
-    download(xml, 'diagram.bpmn', 'application/xml')
-  } catch (err) {
-    alert('XML export failed: ' + err.message)
-  }
-})
-
-document.getElementById('btn-export-svg').addEventListener('click', async () => {
-  try {
-    const { svg } = await modeler.saveSVG()
-    download(svg, 'diagram.svg', 'image/svg+xml')
-  } catch (err) {
-    alert('SVG export failed: ' + err.message)
-  }
-})
-
-document.getElementById('btn-fit').addEventListener('click', () => {
-  modeler.get('canvas').zoom('fit-viewport')
-})
-
-document.getElementById('btn-context').addEventListener('click', openContextPopup)
-
-document.getElementById('btn-lint').addEventListener('click', () => {
-  linter.run()
-})
-
-// ════════════════════════════════════════════════════════════════════════════
-// 10. INITIAL LOAD
-// ════════════════════════════════════════════════════════════════════════════
-loadDiagram(EMPTY_DIAGRAM)
-
-// ── Expose save function globally so inline onclick can reach it ─────────
+// Exposed globally so the inline onclick in w2popup buttons can reach it
 window._semarchSaveContext = function () {
   const values = {
     cocOwner       : document.getElementById('ctx-coc')?.value      || '',
@@ -472,7 +422,6 @@ function openContextPopup() {
       <button class="w2ui-btn w2ui-btn-blue"
         onclick="window._semarchSaveContext()">Save Context</button>`,
     onOpen: () => {
-      // Auto-fill from registry when CoC changes
       document.getElementById('ctx-coc')?.addEventListener('change', e => {
         const coc = cocRegistry.cocs.find(c => c.id === e.target.value)
         if (!coc) return
@@ -485,53 +434,136 @@ function openContextPopup() {
   })
 }
 
-function saveRepositoryContext(values) {
+// ════════════════════════════════════════════════════════════════════════════
+// 8. PALETTE EXTRACTION → left panel
+// ════════════════════════════════════════════════════════════════════════════
+function extractPalette() {
+  const el = document.querySelector('#bpmn-canvas .djs-palette')
+  if (!el) return
+  const left = layout.el('left')
+  left.innerHTML = ''
+  left.appendChild(el)
+  Object.assign(el.style, {
+    position: 'relative', left: '0', top: '0',
+    width: '100%', height: '100%',
+    border: 'none', borderRadius: '0',
+    boxShadow: 'none', background: 'transparent',
+  })
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// 9. FILE SAVE — File System Access API with fallback
+// ════════════════════════════════════════════════════════════════════════════
+async function saveFile(content, suggestedName, mimeType, description, extensions) {
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName,
+        types: [{ description, accept: { [mimeType]: extensions } }]
+      })
+      const writable = await handle.createWritable()
+      await writable.write(content)
+      await writable.close()
+      return
+    } catch (err) {
+      if (err.name === 'AbortError') return  // user cancelled — silent
+      console.warn('showSaveFilePicker failed, using fallback:', err)
+    }
+  }
+  // Fallback — classic download
+  const blob = new Blob([content], { type: mimeType })
+  const a    = document.createElement('a')
+  a.href     = URL.createObjectURL(blob)
+  a.download = suggestedName
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
+function defaultFilename(ext) {
+  const ctx  = readRepositoryContext()
+  const coc  = ctx.cocOwner?.replace(/[^a-zA-Z0-9_-]/g, '_') || 'diagram'
+  const date = new Date().toISOString().slice(0, 10)
+  return `${coc}_${date}.${ext}`
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// 10. DIAGRAM LOAD
+// ════════════════════════════════════════════════════════════════════════════
+async function loadDiagram(xml) {
   try {
-    const moddle  = modeler.get('moddle')
-    const canvas  = modeler.get('canvas')
-
-    // Navigate to bpmn:Definitions via root element's business object
-    let defs = canvas.getRootElement().businessObject
-    while (defs.$parent) defs = defs.$parent
-
-    // Ensure extensionElements exists
-    if (!defs.extensionElements) {
-      defs.extensionElements = moddle.create('bpmn:ExtensionElements', { values: [] })
-      defs.extensionElements.$parent = defs
-    }
-    if (!Array.isArray(defs.extensionElements.values)) {
-      defs.extensionElements.values = []
-    }
-
-    // Remove old RepositoryContext
-    defs.extensionElements.values = defs.extensionElements.values
-      .filter(v => v.$type !== 'semarch:RepositoryContext')
-
-    // Create and attach new one
-    const ctx = moddle.create('semarch:RepositoryContext', values)
-    ctx.$parent = defs.extensionElements
-    defs.extensionElements.values.push(ctx)
-
-    // Adjust linter profile
-    linter.setProfile(values.maturity || 'L2')
-    linter.run()
-
-    console.log('[SemArch] RepositoryContext saved:', values)
+    await modeler.importXML(xml)
+    modeler.get('canvas').zoom('fit-viewport')
+    extractPalette()
+    const ctx = readRepositoryContext()
+    if (ctx.maturity) linter.setProfile(ctx.maturity)
   } catch (err) {
-    console.error('[SemArch] saveRepositoryContext failed:', err)
-    alert('Context save failed: ' + err.message)
+    alert('Import failed: ' + err.message)
   }
 }
 
-function readRepositoryContext() {
-  try {
-    const canvas = modeler.get('canvas')
-    let defs = canvas.getRootElement().businessObject
-    while (defs.$parent) defs = defs.$parent
-    const ctx = defs.extensionElements?.values
-      ?.find(v => v.$type === 'semarch:RepositoryContext')
-    return ctx || {}
-  } catch {
-    return {}
+// ════════════════════════════════════════════════════════════════════════════
+// 11. EVENT LISTENERS
+// ════════════════════════════════════════════════════════════════════════════
+document.getElementById('btn-new').addEventListener('click', () => {
+  if (confirm('Create a new diagram? Unsaved changes will be lost.')) {
+    loadDiagram(EMPTY_DIAGRAM)
   }
-}
+})
+
+const fileInput = document.getElementById('file-input')
+document.getElementById('btn-import').addEventListener('click', () => {
+  fileInput.value = ''
+  fileInput.click()
+})
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = e => loadDiagram(e.target.result)
+  reader.readAsText(file)
+})
+
+document.getElementById('btn-export-xml').addEventListener('click', async () => {
+  try {
+    const { xml } = await modeler.saveXML({ format: true })
+    await saveFile(
+      xml,
+      defaultFilename('bpmn'),
+      'application/xml',
+      'BPMN Process Model',
+      ['.bpmn', '.xml']
+    )
+  } catch (err) {
+    alert('XML export failed: ' + err.message)
+  }
+})
+
+document.getElementById('btn-export-svg').addEventListener('click', async () => {
+  try {
+    const { svg } = await modeler.saveSVG()
+    await saveFile(
+      svg,
+      defaultFilename('svg'),
+      'image/svg+xml',
+      'SVG Diagram',
+      ['.svg']
+    )
+  } catch (err) {
+    alert('SVG export failed: ' + err.message)
+  }
+})
+
+document.getElementById('btn-fit').addEventListener('click', () => {
+  modeler.get('canvas').zoom('fit-viewport')
+})
+
+document.getElementById('btn-context').addEventListener('click', openContextPopup)
+
+document.getElementById('btn-lint').addEventListener('click', () => {
+  linter.run()
+})
+
+// ════════════════════════════════════════════════════════════════════════════
+// 12. INITIAL LOAD
+// ════════════════════════════════════════════════════════════════════════════
+loadDiagram(EMPTY_DIAGRAM)
