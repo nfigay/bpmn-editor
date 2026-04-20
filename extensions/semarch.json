@@ -1,0 +1,80 @@
+{
+  "name": "SemArch",
+  "uri": "http://semarch.io/schema/1.0",
+  "prefix": "semarch",
+  "types": [
+
+    {
+      "name": "Meta",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "cocRef",      "isAttr": true, "type": "String",
+          "description": "Owning Centre of Competence identifier" },
+        { "name": "stdRef",      "isAttr": true, "type": "String",
+          "description": "Normative reference (e.g. DO-178C/6.3.2, ECSS-Q-ST-80/4.3)" },
+        { "name": "maturity",    "isAttr": true, "type": "String",
+          "description": "CoC maturity level: L1 | L2 | L3 | L4" },
+        { "name": "platformRef", "isAttr": true, "type": "String",
+          "description": "Target platform link (EA://GUID-xxx | ARIS://ID-xxx)" },
+        { "name": "programRef",  "isAttr": true, "type": "String",
+          "description": "Programme / contract reference" },
+        { "name": "bmsRef",      "isAttr": true, "type": "String",
+          "description": "Parent BMS process reference in ARIS" },
+        { "name": "version",     "isAttr": true, "type": "String",
+          "description": "Element version for lifecycle tracking" },
+        { "name": "status",      "isAttr": true, "type": "String",
+          "description": "Lifecycle status: Draft | Review | Approved | Deprecated" }
+      ]
+    },
+
+    {
+      "name": "DataStoreContext",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "role",        "isAttr": true, "type": "String",
+          "description": "Functional role of the data store in this process context" },
+        { "name": "systemRef",   "isAttr": true, "type": "String",
+          "description": "Backing system reference (Windchill://..., Doxis://..., SAP://...)" },
+        { "name": "accessLevel", "isAttr": true, "type": "String",
+          "description": "Access level: Read | Write | ReadWrite" },
+        { "name": "stdRef",      "isAttr": true, "type": "String",
+          "description": "Standard governing this data (AP242, ASD S2000M...)" }
+      ]
+    },
+
+    {
+      "name": "MessageContract",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "schemaRef",   "isAttr": true, "type": "String",
+          "description": "XSD or JSON Schema reference for the message payload" },
+        { "name": "version",     "isAttr": true, "type": "String",
+          "description": "Contract version" },
+        { "name": "stdRef",      "isAttr": true, "type": "String",
+          "description": "Standard governing this exchange (AP242, OSLC...)" },
+        { "name": "encoding",    "isAttr": true, "type": "String",
+          "description": "Encoding format: XML | JSON | STEP | RDF" }
+      ]
+    },
+
+    {
+      "name": "RepositoryContext",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "repositoryVersion", "isAttr": true, "type": "String" },
+        { "name": "cocOwner",          "isAttr": true, "type": "String" },
+        { "name": "organization",      "isAttr": true, "type": "String" },
+        { "name": "maturity",          "isAttr": true, "type": "String" },
+        { "name": "stdRef",            "isAttr": true, "type": "String" },
+        { "name": "targetPlatform",    "isAttr": true, "type": "String" },
+        { "name": "programContext",    "isAttr": true, "type": "String" },
+        { "name": "lastReview",        "isAttr": true, "type": "String" }
+      ]
+    }
+
+  ]
+}
