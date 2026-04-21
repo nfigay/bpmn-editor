@@ -1,0 +1,26 @@
+{
+  "id": "camunda-export-map",
+  "label": "Semantic Mediator → Camunda / Zeebe",
+  "targetProduct": "Camunda",
+  "targetNamespacePrefix": "camunda",
+  "addMissing": false,
+  "strip": ["ea:", "aris:", "ecss:", "do178c:"],
+  "preserve": ["semarch:", "camunda:"],
+
+  "mappings": [
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "cocRef",
+      "targetType": "camunda:Properties",
+      "targetAttr": "coc",
+      "transform": "none"
+    },
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "stdRef",
+      "targetType": "camunda:Properties",
+      "targetAttr": "stdRef",
+      "transform": "none"
+    }
+  ]
+}

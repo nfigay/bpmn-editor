@@ -1,0 +1,61 @@
+{
+  "id": "ea-export-map",
+  "label": "Semantic Mediator → Sparx Enterprise Architect",
+  "targetProduct": "Sparx Enterprise Architect",
+  "targetNamespacePrefix": "ea",
+  "addMissing": true,
+  "strip": ["aris:", "camunda:", "ecss:"],
+  "preserve": ["semarch:", "ea:", "do178c:"],
+
+  "mappings": [
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "platformRef",
+      "targetType": "ea:Element",
+      "targetAttr": "guid",
+      "transform": "strip-prefix:EA://GUID-"
+    },
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "cocRef",
+      "targetType": "ea:Element",
+      "targetAttr": "package",
+      "transform": "none"
+    },
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "status",
+      "targetType": "ea:Element",
+      "targetAttr": "status",
+      "transform": "none"
+    },
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "stdRef",
+      "targetType": "ea:TaggedValue",
+      "targetAttr": "tag=semarch.stdRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "semarch:Meta",
+      "sourceAttr": "bmsRef",
+      "targetType": "ea:TaggedValue",
+      "targetAttr": "tag=semarch.bmsRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "do178c:SoftwareLevel",
+      "sourceAttr": "dal",
+      "targetType": "ea:TaggedValue",
+      "targetAttr": "tag=do178c.dal",
+      "transform": "none"
+    },
+    {
+      "sourceType": "do178c:SoftwareLevel",
+      "sourceAttr": "verificationCriteria",
+      "targetType": "ea:TaggedValue",
+      "targetAttr": "tag=do178c.verificationCriteria",
+      "transform": "none"
+    }
+  ]
+}

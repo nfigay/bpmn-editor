@@ -1,0 +1,57 @@
+{
+  "name": "ECSS",
+  "uri": "http://semarch.io/domain/ecss/1.0",
+  "prefix": "ecss",
+  "category": "B",
+  "label": "ECSS Domain",
+  "description": "ESA/ECSS space project management and quality extensions",
+  "types": [
+    {
+      "name": "Activity",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "phaseRef",
+          "isAttr": true, "type": "String",
+          "description": "ECSS project phase: 0|A|B|C|D|E|F" },
+        { "name": "criticalityLevel",
+          "isAttr": true, "type": "String",
+          "description": "Criticality level 1-4 per ECSS-M-ST-10" },
+        { "name": "milestone",
+          "isAttr": true, "type": "String",
+          "description": "Associated milestone: MDR|PRR|SRR|PDR|CDR|QR|AR|ORR|FRR|LRR" },
+        { "name": "reviewStandard",
+          "isAttr": true, "type": "String",
+          "description": "ECSS standard governing this review (e.g. ECSS-E-ST-10-02)" }
+      ]
+    },
+    {
+      "name": "ProductAssurance",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "paCategory",
+          "isAttr": true, "type": "String",
+          "description": "Product assurance category per ECSS-Q-ST-20" },
+        { "name": "verificationMethod",
+          "isAttr": true, "type": "String",
+          "description": "T=Test | A=Analysis | I=Inspection | D=Demonstration" },
+        { "name": "nonConformanceRef",
+          "isAttr": true, "type": "String",
+          "description": "Reference to NCR if applicable" }
+      ]
+    },
+    {
+      "name": "TechnicalRequirement",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "requirementId", "isAttr": true, "type": "String" },
+        { "name": "source",        "isAttr": true, "type": "String",
+          "description": "ECSS standard + paragraph reference" },
+        { "name": "category",      "isAttr": true, "type": "String",
+          "description": "functional | performance | interface | environment | safety" }
+      ]
+    }
+  ]
+}

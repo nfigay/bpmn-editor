@@ -1,0 +1,60 @@
+{
+  "id": "ea-import-map",
+  "label": "Sparx Enterprise Architect → Semantic Mediator",
+  "sourceProduct": "Sparx Enterprise Architect",
+  "sourceNamespacePrefix": "ea",
+  "targetNamespacePrefix": "semarch",
+  "unmappedStrategy": "preserve",
+
+  "mappings": [
+    {
+      "sourceType": "ea:Element",
+      "sourceAttr": "guid",
+      "targetType": "semarch:Meta",
+      "targetAttr": "platformRef",
+      "transform": "prefix:EA://GUID-{value}"
+    },
+    {
+      "sourceType": "ea:Element",
+      "sourceAttr": "package",
+      "targetType": "semarch:Meta",
+      "targetAttr": "cocRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "ea:Element",
+      "sourceAttr": "status",
+      "targetType": "semarch:Meta",
+      "targetAttr": "status",
+      "transform": "none"
+    },
+    {
+      "sourceType": "ea:TaggedValue",
+      "sourceAttr": "tag=do178c.dal",
+      "targetType": "do178c:SoftwareLevel",
+      "targetAttr": "dal",
+      "transform": "upper"
+    },
+    {
+      "sourceType": "ea:TaggedValue",
+      "sourceAttr": "tag=do178c.verificationCriteria",
+      "targetType": "do178c:SoftwareLevel",
+      "targetAttr": "verificationCriteria",
+      "transform": "none"
+    },
+    {
+      "sourceType": "ea:TaggedValue",
+      "sourceAttr": "tag=semarch.stdRef",
+      "targetType": "semarch:Meta",
+      "targetAttr": "stdRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "ea:TaggedValue",
+      "sourceAttr": "tag=semarch.bmsRef",
+      "targetType": "semarch:Meta",
+      "targetAttr": "bmsRef",
+      "transform": "none"
+    }
+  ]
+}

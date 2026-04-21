@@ -1,0 +1,46 @@
+{
+  "id": "aris-import-map",
+  "label": "ARIS → Semantic Mediator",
+  "sourceProduct": "ARIS",
+  "sourceNamespacePrefix": "aris",
+  "targetNamespacePrefix": "semarch",
+  "unmappedStrategy": "preserve",
+
+  "mappings": [
+    {
+      "sourceType": "aris:Object",
+      "sourceAttr": "objectId",
+      "targetType": "semarch:Meta",
+      "targetAttr": "platformRef",
+      "transform": "prefix:ARIS://ID-{value}"
+    },
+    {
+      "sourceType": "aris:Object",
+      "sourceAttr": "objectName",
+      "targetType": "semarch:Meta",
+      "targetAttr": "cocRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "aris:Object",
+      "sourceAttr": "group",
+      "targetType": "semarch:Meta",
+      "targetAttr": "bmsRef",
+      "transform": "prefix:ARIS://{value}"
+    },
+    {
+      "sourceType": "aris:Attribute",
+      "sourceAttr": "tag=stdRef",
+      "targetType": "semarch:Meta",
+      "targetAttr": "stdRef",
+      "transform": "none"
+    },
+    {
+      "sourceType": "aris:Attribute",
+      "sourceAttr": "tag=maturity",
+      "targetType": "semarch:Meta",
+      "targetAttr": "maturity",
+      "transform": "upper"
+    }
+  ]
+}

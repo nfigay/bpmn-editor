@@ -1,0 +1,121 @@
+{
+  "id": "profile-coc-space-esa-l2",
+  "label": "CoC Space — ESA — L2",
+  "description": "Space CoC for ESA programmes — ECSS-aligned at L2 maturity",
+
+  "activationConditions": {
+    "businessContext.systemType": "CoC",
+    "lifecycle.maturity": ["L2", "L3"],
+    "businessContext.normativeRefs": "ECSS"
+  },
+
+  "namespaces": ["semarch", "ecss"],
+
+  "fields": [
+    {
+      "id": "semarch:cocRef",
+      "label": "Centre of Competence",
+      "namespace": "semarch",
+      "targetType": "semarch:Meta",
+      "targetAttr": "cocRef",
+      "appliesTo": ["bpmn:Process", "bpmn:Task", "bpmn:CallActivity"],
+      "type": "string",
+      "required": true,
+      "group": "Traceability"
+    },
+    {
+      "id": "semarch:stdRef",
+      "label": "ECSS Standard Reference",
+      "namespace": "semarch",
+      "targetType": "semarch:Meta",
+      "targetAttr": "stdRef",
+      "appliesTo": ["*"],
+      "type": "string",
+      "required": false,
+      "group": "Traceability",
+      "hint": "e.g. ECSS-M-ST-10/4.3.2, ECSS-Q-ST-80/5.1"
+    },
+    {
+      "id": "semarch:programRef",
+      "label": "Programme Reference",
+      "namespace": "semarch",
+      "targetType": "semarch:Meta",
+      "targetAttr": "programRef",
+      "appliesTo": ["bpmn:Process"],
+      "type": "string",
+      "required": false,
+      "group": "Traceability",
+      "hint": "ESA contract or programme identifier"
+    },
+    {
+      "id": "ecss:phaseRef",
+      "label": "Project Phase",
+      "namespace": "ecss",
+      "targetType": "ecss:Activity",
+      "targetAttr": "phaseRef",
+      "appliesTo": ["bpmn:Process", "bpmn:Task"],
+      "type": "enum",
+      "values": ["0", "A", "B", "C", "D", "E", "F"],
+      "required": false,
+      "group": "ECSS",
+      "hint": "ECSS project phase per ECSS-M-ST-10"
+    },
+    {
+      "id": "ecss:milestone",
+      "label": "Governing Milestone",
+      "namespace": "ecss",
+      "targetType": "ecss:Activity",
+      "targetAttr": "milestone",
+      "appliesTo": ["bpmn:Process", "bpmn:Task"],
+      "type": "enum",
+      "values": ["MDR","PRR","SRR","PDR","CDR","QR","AR","ORR","FRR","LRR"],
+      "required": false,
+      "group": "ECSS"
+    },
+    {
+      "id": "ecss:criticalityLevel",
+      "label": "Criticality Level",
+      "namespace": "ecss",
+      "targetType": "ecss:Activity",
+      "targetAttr": "criticalityLevel",
+      "appliesTo": ["bpmn:Process", "bpmn:Task"],
+      "type": "enum",
+      "values": ["1", "2", "3", "4"],
+      "required": false,
+      "group": "ECSS",
+      "hint": "1=highest per ECSS-M-ST-10"
+    },
+    {
+      "id": "ecss:verificationMethod",
+      "label": "Verification Method",
+      "namespace": "ecss",
+      "targetType": "ecss:ProductAssurance",
+      "targetAttr": "verificationMethod",
+      "appliesTo": ["bpmn:Task", "bpmn:UserTask"],
+      "type": "enum",
+      "values": ["T", "A", "I", "D"],
+      "required": false,
+      "group": "ECSS",
+      "hint": "T=Test A=Analysis I=Inspection D=Demonstration"
+    }
+  ],
+
+  "rules": [
+    {
+      "id": "ecss/phase-required-process",
+      "description": "Processes in ECSS programmes should declare their project phase",
+      "severity": "info",
+      "type": "required",
+      "field": "ecss:phaseRef",
+      "appliesTo": ["bpmn:Process"]
+    },
+    {
+      "id": "semarch/coc-ref-required",
+      "description": "CoC reference required",
+      "severity": "info",
+      "type": "required",
+      "field": "semarch:cocRef",
+      "appliesTo": ["bpmn:Process"]
+    }
+  ]
+}
