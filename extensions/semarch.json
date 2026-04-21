@@ -9,22 +9,14 @@
       "superClass": ["Element"],
       "meta": { "allowedIn": ["*"] },
       "properties": [
-        { "name": "cocRef",      "isAttr": true, "type": "String",
-          "description": "Owning Centre of Competence identifier" },
-        { "name": "stdRef",      "isAttr": true, "type": "String",
-          "description": "Normative reference (e.g. DO-178C/6.3.2, ECSS-Q-ST-80/4.3)" },
-        { "name": "maturity",    "isAttr": true, "type": "String",
-          "description": "CoC maturity level: L1 | L2 | L3 | L4" },
-        { "name": "platformRef", "isAttr": true, "type": "String",
-          "description": "Target platform link (EA://GUID-xxx | ARIS://ID-xxx)" },
-        { "name": "programRef",  "isAttr": true, "type": "String",
-          "description": "Programme / contract reference" },
-        { "name": "bmsRef",      "isAttr": true, "type": "String",
-          "description": "Parent BMS process reference in ARIS" },
-        { "name": "version",     "isAttr": true, "type": "String",
-          "description": "Element version for lifecycle tracking" },
-        { "name": "status",      "isAttr": true, "type": "String",
-          "description": "Lifecycle status: Draft | Review | Approved | Deprecated" }
+        { "name": "cocRef",      "isAttr": true, "type": "String" },
+        { "name": "stdRef",      "isAttr": true, "type": "String" },
+        { "name": "maturity",    "isAttr": true, "type": "String" },
+        { "name": "platformRef", "isAttr": true, "type": "String" },
+        { "name": "programRef",  "isAttr": true, "type": "String" },
+        { "name": "bmsRef",      "isAttr": true, "type": "String" },
+        { "name": "version",     "isAttr": true, "type": "String" },
+        { "name": "status",      "isAttr": true, "type": "String" }
       ]
     },
 
@@ -33,14 +25,10 @@
       "superClass": ["Element"],
       "meta": { "allowedIn": ["*"] },
       "properties": [
-        { "name": "role",        "isAttr": true, "type": "String",
-          "description": "Functional role of the data store in this process context" },
-        { "name": "systemRef",   "isAttr": true, "type": "String",
-          "description": "Backing system reference (Windchill://..., Doxis://..., SAP://...)" },
-        { "name": "accessLevel", "isAttr": true, "type": "String",
-          "description": "Access level: Read | Write | ReadWrite" },
-        { "name": "stdRef",      "isAttr": true, "type": "String",
-          "description": "Standard governing this data (AP242, ASD S2000M...)" }
+        { "name": "role",        "isAttr": true, "type": "String" },
+        { "name": "systemRef",   "isAttr": true, "type": "String" },
+        { "name": "accessLevel", "isAttr": true, "type": "String" },
+        { "name": "stdRef",      "isAttr": true, "type": "String" }
       ]
     },
 
@@ -49,14 +37,124 @@
       "superClass": ["Element"],
       "meta": { "allowedIn": ["*"] },
       "properties": [
-        { "name": "schemaRef",   "isAttr": true, "type": "String",
-          "description": "XSD or JSON Schema reference for the message payload" },
-        { "name": "version",     "isAttr": true, "type": "String",
-          "description": "Contract version" },
-        { "name": "stdRef",      "isAttr": true, "type": "String",
-          "description": "Standard governing this exchange (AP242, OSLC...)" },
-        { "name": "encoding",    "isAttr": true, "type": "String",
-          "description": "Encoding format: XML | JSON | STEP | RDF" }
+        { "name": "schemaRef",  "isAttr": true, "type": "String" },
+        { "name": "version",    "isAttr": true, "type": "String" },
+        { "name": "stdRef",     "isAttr": true, "type": "String" },
+        { "name": "encoding",   "isAttr": true, "type": "String" }
+      ]
+    },
+
+    {
+      "name": "BusinessContext",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "systemType",          "isAttr": true, "type": "String",
+          "description": "BMS | CoC | Programme | Activite" },
+        { "name": "systemName",          "isAttr": true, "type": "String",
+          "description": "Name of the applicative system this repository serves" },
+        { "name": "owner",               "isAttr": true, "type": "String" },
+        { "name": "organization",        "isAttr": true, "type": "String" },
+        { "name": "governanceFramework", "isAttr": true, "type": "String" },
+        { "name": "normativeRefs",       "isAttr": true, "type": "String",
+          "description": "Space-separated list of normative references" },
+        { "name": "programs",            "isAttr": true, "type": "String",
+          "description": "Space-separated programme identifiers" },
+        { "name": "communities",         "isAttr": true, "type": "String",
+          "description": "Space-separated community identifiers (MIWG, ASD-SSG...)" }
+      ]
+    },
+
+    {
+      "name": "ApplicationSystem",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "id",          "isAttr": true, "type": "String",
+          "description": "Stable identifier for this application system" },
+        { "name": "name",        "isAttr": true, "type": "String",
+          "description": "Human name of the applicative system (not the product)" },
+        { "name": "purpose",     "isAttr": true, "type": "String" },
+        { "name": "interfaces",  "isAttr": true, "type": "String",
+          "description": "Space-separated IDs of interfaced application systems" }
+      ]
+    },
+
+    {
+      "name": "TechnicalRealization",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "applicationSystemId", "isAttr": true, "type": "String",
+          "description": "References ApplicationSystem.id" },
+        { "name": "softwareProduct",     "isAttr": true, "type": "String",
+          "description": "Name of the software product (ARIS, Sparx EA, Windchill...)" },
+        { "name": "productVersion",      "isAttr": true, "type": "String" },
+        { "name": "nativeFormat",        "isAttr": true, "type": "String",
+          "description": "Native serialisation format of the product (AML, XMI, AP242...)" },
+        { "name": "exchangeFormat",      "isAttr": true, "type": "String",
+          "description": "Exchange format used for interoperability (BPMN 2.0 XML...)" },
+        { "name": "idScheme",            "isAttr": true, "type": "String",
+          "description": "How this product generates IDs (EA_GUID, ARIS_ID...)" },
+        { "name": "url",                 "isAttr": true, "type": "String" }
+      ]
+    },
+
+    {
+      "name": "RepositoryLifecycle",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "version",      "isAttr": true, "type": "String" },
+        { "name": "status",       "isAttr": true, "type": "String",
+          "description": "Draft | Active | Archived | Deprecated" },
+        { "name": "maturity",     "isAttr": true, "type": "String",
+          "description": "L1 | L2 | L3 | L4" },
+        { "name": "lastReview",   "isAttr": true, "type": "String" },
+        { "name": "nextReview",   "isAttr": true, "type": "String" },
+        { "name": "reviewCycle",  "isAttr": true, "type": "String" },
+        { "name": "governedBy",   "isAttr": true, "type": "String" }
+      ]
+    },
+
+    {
+      "name": "Correspondence",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "id",                  "isAttr": true, "type": "String" },
+        { "name": "type",                "isAttr": true, "type": "String",
+          "description": "derivation | equivalence | specialization | abstraction" },
+        { "name": "sourceRepositoryId", "isAttr": true, "type": "String" },
+        { "name": "sourceModelId",      "isAttr": true, "type": "String" },
+        { "name": "targetRepositoryId", "isAttr": true, "type": "String" },
+        { "name": "targetModelId",      "isAttr": true, "type": "String" },
+        { "name": "confidence",         "isAttr": true, "type": "String",
+          "description": "high | medium | low | unverified" },
+        { "name": "preservedAttributes","isAttr": true, "type": "String",
+          "description": "Space-separated list of preserved attributes" },
+        { "name": "lostAttributes",     "isAttr": true, "type": "String",
+          "description": "Space-separated list of attributes lost in translation" },
+        { "name": "notes",              "isAttr": true, "type": "String" }
+      ]
+    },
+
+    {
+      "name": "MediationContext",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["*"] },
+      "properties": [
+        { "name": "sourceSystem",          "isAttr": true, "type": "String",
+          "description": "Name of source applicative system" },
+        { "name": "targetSystem",          "isAttr": true, "type": "String",
+          "description": "Name of target applicative system" },
+        { "name": "sourceSoftwareProduct", "isAttr": true, "type": "String" },
+        { "name": "targetSoftwareProduct", "isAttr": true, "type": "String" },
+        { "name": "direction",             "isAttr": true, "type": "String",
+          "description": "unidirectional | bidirectional" },
+        { "name": "strategy",              "isAttr": true, "type": "String",
+          "description": "by-semarch-id | by-name | by-platformRef | manual" },
+        { "name": "lastSynchronized",      "isAttr": true, "type": "String" }
       ]
     },
 
